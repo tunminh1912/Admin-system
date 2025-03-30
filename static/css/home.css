@@ -51,11 +51,11 @@ body {
     padding: 20px;
 }
 
-.dashboard, .users, .elections, .formThemCuocBauCu, .Quanlyungcuvien, .formThemUngCuVien {
+.dashboard, .users, .elections, .formThemCuocBauCu, .Quanlyungcuvien, .formThemUngCuVien, .results {
     display: none;
 }
 
-.dashboard.active, .users.active, .elections.active, .formThemCuocBauCu.active, .Quanlyungcuvien.active, .formThemUngCuVien.active {
+.dashboard.active, .users.active, .elections.active, .formThemCuocBauCu.active, .Quanlyungcuvien.active, .formThemUngCuVien.active, .results.active {
     display: block;
 }
 

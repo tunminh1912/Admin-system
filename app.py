@@ -1,5 +1,5 @@
 import traceback
-
+import requests
 import certifi
 from flask import Flask, render_template, jsonify, request, session, redirect, url_for, Blueprint
 from pymongo import MongoClient
@@ -27,8 +27,8 @@ w3 = Web3(Web3.HTTPProvider(config.GANACHE_RPC_URL))
 
 # Danh sách tài khoản cố định
 accountList = [
-    {"role": "ADMIN", "name": "Quản lý cuộc bầu cử", "address": "0xf1a31c5506355261E3D6898522F073d012d2281e"},
-    {"role": "INSPECTOR", "name": "Người kiểm duyệt", "address": "0xbb7211e996F784EFD432Ce4bCc7b699d48218a74"},
+    {"role": "ADMIN", "name": "Quản lý cuộc bầu cử", "address": "0xAF0a588a1eb15617171C73017278E745c0FE0ea6"},
+    {"role": "INSPECTOR", "name": "Người kiểm duyệt", "address": "0xcbC06Fb60093188236733599539261a59428fB9f"},
 ]
 
 # Lấy accounts từ ganache
@@ -283,14 +283,14 @@ def get_elections():
 @app.route('/get_candidates', methods=['GET'])
 def get_all_candidates():
     try:
-        print("Bắt đầu lấy danh sách ứng cử viên...")  # Kiểm tra xem route có được gọi không
+        #print("Bắt đầu lấy danh sách ứng cử viên...")  # Kiểm tra xem route có được gọi không
 
         candidate_count = contract.functions.candidateCount().call()
-        print(f"Số lượng ứng cử viên: {candidate_count}")  # Kiểm tra số lượng ứng cử viên
+        #print(f"Số lượng ứng cử viên: {candidate_count}")  # Kiểm tra số lượng ứng cử viên
 
         candidate_list = []
         for i in range(1, candidate_count + 1):
-            print(f"Đang lấy thông tin ứng cử viên có ID: {i}")  # Kiểm tra ID đang được lấy
+            #print(f"Đang lấy thông tin ứng cử viên có ID: {i}")  # Kiểm tra ID đang được lấy
             candidate = contract.functions.getCandidate(i).call()
 
             candidate_data = {
@@ -307,15 +307,45 @@ def get_all_candidates():
                 "workplace": candidate[10],
                 "status": candidate[11]
             }
-            print(f"Thông tin ứng cử viên {i}: {candidate_data}")  # Kiểm tra thông tin ứng cử viên
+            #print(f"Thông tin ứng cử viên {i}: {candidate_data}")  # Kiểm tra thông tin ứng cử viên
             candidate_list.append(candidate_data)
 
-        print(f"Danh sách ứng cử viên trả về: {candidate_list}")  # Kiểm tra danh sách cuối cùng
+        #print(f"Danh sách ứng cử viên trả về: {candidate_list}")  # Kiểm tra danh sách cuối cùng
         return jsonify(candidate_list), 200
 
     except Exception as e:
         print(f"Lỗi khi lấy danh sách ứng cử viên: {e}")
         return jsonify({"error": str(e)}), 500
+    
+
+@app.route('/get_candidates/<int:id>', methods=['GET'])
+def get_candidate_by_id(id):
+    try:
+        candidate = contract.functions.getCandidate(id).call()
+        if not candidate:
+            return jsonify({"error": "Candidate not found"}), 404
+        candidate_data = {
+            "id": candidate[0],
+            "full_name": candidate[1],
+            "birth_date": candidate[2],
+            "gender": candidate[3],
+            "nationality": candidate[4],
+            "ethnicity": candidate[5],
+            "hometown": candidate[6],
+            "education": candidate[7],
+            "degree": candidate[8],
+            "occupation": candidate[9],
+            "workplace": candidate[10],
+            "status": candidate[11]
+        }
+        #print(f"Thông tin ứng cử viên {id}: {candidate_data}")  # Kiểm tra thông tin ứng cử viên
+
+        return jsonify(candidate_data), 200
+
+    except Exception as e:
+        print(f"Lỗi khi lấy danh sách ứng cử viên: {e}")
+        return jsonify({"error": str(e)}), 500
+
 
 
 @app.route('/candidate_count', methods=['GET'])
@@ -528,6 +558,47 @@ def approve_candidate(candidate_id):
 
     except Exception as e:
         print(f"Error approving candidate: {e}")
+        return jsonify({"error": str(e)}), 500
+    
+
+@app.route("/approve_election/<election_id>", methods=["POST"])
+def approve_election(election_id):
+    try:
+        # Kiểm tra quyền của người dùng
+        if session.get("user", {}).get("role") != "INSPECTOR":
+            return jsonify({"error": "Only INSPECTOR can approve elections"}), 403
+
+        # Lấy private key từ request
+        data = request.get_json()
+        private_key = data.get("privateKey")
+        if not private_key:
+            return jsonify({"error": "Private Key is required."}), 400
+
+        # Kiểm tra election_id hợp lệ
+        try:
+            election_id = int(election_id)
+        except ValueError:
+            return jsonify({"error": "Invalid election_id. Must be an integer."}), 400
+
+        # Tạo tài khoản từ private key
+        account = Account.from_key(private_key)
+        user_address = account.address
+
+        # Gửi giao dịch duyệt cuộc bầu cử đến smart contract
+        txn = contract.functions.approveElection(election_id).transact({
+            'from': user_address
+        })
+
+        # Chờ nhận transaction receipt
+        tx_receipt = w3.eth.wait_for_transaction_receipt(txn)
+
+        return jsonify({
+            "message": f"Election with ID {election_id} approved successfully!",
+            "transactionHash": tx_receipt.transactionHash.hex()
+        }), 200
+
+    except Exception as e:
+        print(f"Error approving election: {e}")
         return jsonify({"error": str(e)}), 500
     
 

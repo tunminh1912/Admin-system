@@ -284,6 +284,17 @@ contract Election {
         );
     }
 
+    event ElectionApproved(uint electionId);
+    function approveElection(uint _electionId) public {
+        require(participantRoles[msg.sender] == Role.INSPECTOR, "Only INSPECTOR can approve elections");
+        require(elections[_electionId].id != 0, "Election not found");
+        require(elections[_electionId].status == Election_status.Created, "Election is already approved");
+        
+        elections[_electionId].status = Election_status.Approved;
+        emit ElectionApproved(_electionId);
+    }
+
+
     function getCandidatesInElection(uint _electionId) public view returns (Candidate[] memory) {
         require(_electionId > 0 && _electionId <= electionCount, "Election does not exist");
 
@@ -301,7 +312,7 @@ contract Election {
 
     // Mapping để kiểm tra ứng viên đã có trong cuộc bầu cử chưa
     mapping(uint => mapping(uint => bool)) public isCandidateInElection;
-        function addCandidateToElection(uint _electionId, uint _candidateId) public {
+    function addCandidateToElection(uint _electionId, uint _candidateId) public {
         require(participantRoles[msg.sender] == Role.ADMIN, "Only ADMIN can add candidates");
         require(elections[_electionId].id != 0, "Election not found");
         require(candidates[_candidateId].id != 0, "Candidate not found");

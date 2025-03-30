@@ -19,6 +19,7 @@
         </li>
         <li class="menu-item" data-target="elections"><i class="fa fa-vote-yea"></i>Quản lý bầu cử</li>
         <li class="menu-item" data-target="Quanlyungcuvien" onclick="loadUngCuVien()"><i class="fa fa-user-tie"></i> Quản lý ứng cử viên</li>
+        <li class="menu-item" data-target="results" onclick="fetchResult()"><i class="fa-solid fa-square-poll-vertical"></i> Duyệt kết quả</li>
         <button class="logout-btn" onclick="window.location.href='{{ url_for('auth.logout') }}'">
     <i class="fa fa-sign-out-alt"></i> Đăng xuất
 </button>
@@ -182,7 +183,7 @@
         <tbody id="ungCuVienTableBody">
         </tbody>
     </table>
-</div>
+    </div>
     <div class="formThemUngCuVien">
         <h2>Thêm Ứng Cử Viên</h2>
         <form id="ungCuVienForm">
@@ -221,6 +222,26 @@
             <button type="button" id="btnLuuUngCuVien">Lưu</button>
             <button type="button" id="btnHuyUngCuVien">Hủy</button>
         </form>
+    </div>
+
+    <div class="results">
+        <h2>Duyệt kết quả bầu cử</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên cuộc bầu cử</th>
+                <th>Tỉnh</th>
+                <th>Thời gian bắt đầu</th>
+                <th>Thời gian kết thúc</th>
+                <th>Số lượng phiếu bầu</th>
+                <th>Trạng thái</th>
+                <th>Chi tiết</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -273,4 +294,5 @@
 <script src="{{ url_for('static', filename='script/users.js') }}"></script>
 <script src="{{ url_for('static', filename='script/elections.js') }}"></script>
 <script src="{{ url_for('static', filename='script/candidates.js') }}"></script>
+<script src="{{ url_for('static', filename='script/result.js') }}"></script>
 </html>
