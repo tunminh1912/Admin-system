@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/css/home.css">
+    <script src="https://esgoo.net/scripts/jquery.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>ADMIN</h2>
+    <p>Vai trò: {{ user.role }}</p>
+    <ul>
+        <li class="menu-item active" data-target="dashboard"><i class="fa fa-home"></i>Dashboard</li>
+        <li class="menu-item" data-target="users" onclick="loadUsers()"><i class="fa fa-users"></i>Quản lý người dùng
+        </li>
+        <li class="menu-item" data-target="elections"><i class="fa fa-vote-yea"></i>Quản lý bầu cử</li>
+        <li class="menu-item" data-target="Quanlyungcuvien" onclick="loadUngCuVien()"><i class="fa fa-user-tie"></i> Quản lý ứng cử viên</li>
+<button class="logout-btn" onclick="window.location.href='{{ url_for('auth.logout') }}'">
+    <i class="fa fa-sign-out-alt"></i> Đăng xuất
+</button>
+    </ul>
+</div>
+
+<div class="main">
+    <div class="dashboard active">
+        <h2>Dashboard</h2>
+        <div class="cards">
+            <div class="card">
+                <h3>Người dùng</h3>
+            </div>
+            <div class="card">
+                <h3>Bầu cử</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="users">
+        <h2>Quản lý Người Dùng</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>STT</th>
+                <th>Phê duyệt</th>
+                <th>Họ và tên</th>
+                <th>Ngày sinh</th>
+                <th>Quê quán</th>
+                <th>Số điện thoại</th>
+                <th>Hình Ảnh</th>
+                <!-- <th>Blockchain_hash</th>
+                <th>Vote</th> -->
+
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="elections">
+        <h2>Quản lý Bầu Cử</h2>
+        <button id="btnThemCuocBauCu">Thêm</button>
+
+        <table>
+            <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên cuộc bầu cử</th>
+                <th>Tỉnh</th>
+                <th>Quận</th>
+                <th>Phường</th>
+                <th>Số lượng ứng cử viên</th>
+                <th>Thời gian bắt đầu</th>
+                <th>Thời gian kết thúc</th>
+                <th>Chi tiết</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="formThemCuocBauCu">
+        <h2>Thêm cuộc bầu cử</h2>
+        <form id="electionForm">
+            <label for="tenCuocBauCu">Tên cuộc bầu cử:</label>
+            <input type="text" id="tenCuocBauCu" required>
+
+            <div class="css_select_div">
+                <label for="tinh">Tỉnh:</label>
+                <select class="css_select" id="tinh" name="tinh">
+                    <option value="0">Chọn Tỉnh Thành</option>
+                </select>
+                <label for="quan">Quận:</label>
+                <select class="css_select" id="quan" name="quan">
+                    <option value="0">Chọn Quận Huyện</option>
+                </select>
+                <label for="phuong">Phường:</label>
+                <select class="css_select" id="phuong" name="phuong">
+                    <option value="0">Chọn Phường Xã</option>
+                </select>
+            </div>
+
+            <label for="thoiGianBatDau">Thời gian bắt đầu:</label>
+            <input type="datetime-local" id="thoiGianBatDau" required>
+
+            <label for="thoiGianKetThuc">Thời gian kết thúc:</label>
+            <input type="datetime-local" id="thoiGianKetThuc" required>
+
+            <button type="submit">Lưu</button>
+            <button type="button" id="btnHuy">Hủy</button>
+        </form>
+    </div>
+
+    <div id="electionModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 style="text-align: center">Chi tiết cuộc bầu cử</h2>
+            <p><strong>Tên:</strong> <span id="modal_tenCuocBauCu"></span></p>
+            <p><strong>Tỉnh:</strong> <span id="modal_tinh"></span></p>
+            <p><strong>Quận:</strong> <span id="modal_quan"></span></p>
+            <p><strong>Phường:</strong> <span id="modal_phuong"></span></p>
+            <p><strong>Bắt đầu:</strong> <span id="modal_thoiGianBatDau"></span></p>
+            <p><strong>Kết thúc:</strong> <span id="modal_thoiGianKetThuc"></span></p>
+
+            <h3>Danh sách ứng cử viên</h3>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Họ và tên</th>
+                        <th>Ngày sinh</th>
+                        <th>Giới tính</th>
+                        <th>Quốc tịch</th>
+                        <th>Dân tộc</th>
+<!--                        <th>Tôn giáo</th>-->
+                        <th>Quê quán</th>
+<!--                        <th>Nơi ở hiện nay</th>-->
+                        <th>Nghề nghiệp, chức vụ</th>
+                        <th>Nơi công tác</th>
+                    </tr>
+                </thead>
+                <tbody id="modal_ungCuVien"></tbody>
+            </table>
+
+            <!-- Nút mở form thêm ứng cử viên -->
+            <div id="chooseCandidatesSection">
+
+                <h3>Chọn ứng cử viên:</h3>
+                <div id="candidateList"></div>
+                <button type="button" onclick="submitCandidates(document.getElementById('electionModal').getAttribute('data-id'))">
+                    Thêm ứng cử viên đã chọn
+                </button>
+            </div>
+        </div>
+    </div>
+
+   <div class="Quanlyungcuvien">
+    <h2>Quản lý Ứng Cử Viên</h2>
+    <button id="btnThemUngCuVien" class="button">Thêm Ứng Cử Viên</button>
+    <table>
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Họ và tên</th>
+                <th>Ngày sinh</th>
+                <th>Giới tính</th>
+                <th>Quốc tịch</th>
+                <th>Dân tộc</th>
+                <th>Quê quán</th>
+                <th>Học vị</th>
+                <th>Nghề nghiệp, chức vụ</th>
+                <th>Nơi công tác</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody id="ungCuVienTableBody">
+        </tbody>
+    </table>
+</div>
+    <div class="formThemUngCuVien">
+        <h2>Thêm Ứng Cử Viên</h2>
+        <form id="ungCuVienForm">
+            <label for="full_name">Họ và tên:</label>
+            <input type="text" name="full_name" id="full_name" required>
+
+            <label for="dob">Ngày sinh:</label>
+            <input type="date" name="dob" id="dob" required>
+
+            <label for="gender">Giới tính:</label>
+            <select name="gender" id="gender" required>
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác">Khác</option>
+            </select>
+
+            <label for="nationality">Quốc tịch:</label>
+            <input type="text" name="nationality" id="nationality" required>
+
+            <label for="ethnicity">Dân tộc:</label>
+            <input type="text" name="ethnicity" id="ethnicity" required>
+
+            <label for="hometown">Quê quán:</label>
+            <input type="text" name="hometown" id="hometown" required>
+
+
+            <label for="academic_degree">Học vị:</label>
+            <input type="text" name="academic_degree" id="academic_degree">
+
+            <label for="occupation">Nghề nghiệp, chức vụ:</label>
+            <input type="text" name="occupation" id="occupation" required>
+
+            <label for="workplace">Nơi công tác:</label>
+            <input type="text" name="workplace" id="workplace">
+
+            <button type="button" id="btnLuuUngCuVien">Lưu</button>
+            <button type="button" id="btnHuyUngCuVien">Hủy</button>
+        </form>
+    </div>
+</div>
+
+</body>
+
+<script>
+    $(document).ready(function() {
+        // Lấy danh sách tỉnh thành
+        $.getJSON('https://esgoo.net/api-tinhthanh/1/0.htm', function(data_tinh) {
+            if (data_tinh.error == 0) {
+                $.each(data_tinh.data, function(key_tinh, val_tinh) {
+                    $("#tinh").append('<option value="' + val_tinh.id + '">' + val_tinh.full_name + '</option>');
+                });
+
+                $("#tinh").change(function() {
+                    var idtinh = $(this).val();
+                    $("#quan").html('<option value="0">Chọn Quận Huyện</option>');
+                    $("#phuong").html('<option value="0">Chọn Phường Xã</option>');
+
+                    if (idtinh !== "0") {
+                        $.getJSON('https://esgoo.net/api-tinhthanh/2/' + idtinh + '.htm', function(data_quan) {
+                            if (data_quan.error == 0) {
+                                $.each(data_quan.data, function(key_quan, val_quan) {
+                                    $("#quan").append('<option value="' + val_quan.id + '">' + val_quan.full_name + '</option>');
+                                });
+
+                                $("#quan").change(function() {
+                                    var idquan = $(this).val();
+                                    $("#phuong").html('<option value="0">Chọn Phường Xã</option>');
+
+                                    if (idquan !== "0") {
+                                        $.getJSON('https://esgoo.net/api-tinhthanh/3/' + idquan + '.htm', function(data_phuong) {
+                                            if (data_phuong.error == 0) {
+                                                $.each(data_phuong.data, function(key_phuong, val_phuong) {
+                                                    $("#phuong").append('<option value="' + val_phuong.id + '">' + val_phuong.full_name + '</option>');
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    });
+</script>
+<script src="{{ url_for('static', filename='script/menu.js') }}"></script>
+<script src="{{ url_for('static', filename='script/users.js') }}"></script>
+<script src="{{ url_for('static', filename='script/elections.js') }}"></script>
+<script src="{{ url_for('static', filename='script/candidates.js') }}"></script>
+</html>

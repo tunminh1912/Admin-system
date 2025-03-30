@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Bỏ Phiếu</title>
+   <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <h1 class="main-title">ADMIN</h1>
+
+            <div class="auth-container">
+                <h3>Chọn tài khoản để đăng nhập:</h3>
+        <form method="POST">
+            <select name="address">
+                {% for account in accounts %}
+                    <option value="{{ account.address }}">{{ account.name }} ({{ account.role }})</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Đăng nhập</button>
+        </form>
+
+            </form>
+        </div>
+    </div>
+</body>
+<script src="{{ url_for('static', filename='script/index.js') }}"></script>
+</html>

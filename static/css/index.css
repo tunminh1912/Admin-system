@@ -1,0 +1,190 @@
+/* Tiêu đề chính */
+.main-title {
+    font-size: 36px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white; /* Màu trắng */
+    text-shadow: 3px 3px 10px rgba(255, 255, 255, 0.6),
+                 0px 0px 15px rgba(255, 255, 255, 0.8); /* Hiệu ứng sáng nhẹ */
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Phụ đề */
+.subtitle {
+    font-size: 18px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9); /* Màu trắng hơi mờ để dịu mắt hơn */
+    text-shadow: 2px 2px 6px rgba(255, 255, 255, 0.5);
+    margin-bottom: 20px;
+    text-align: center;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.4;
+}
+
+/* CONTAINER CHÍNH */
+.auth-container {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.25);
+    width: 650px;
+    backdrop-filter: blur(12px);
+    text-align: center;
+}
+
+/* TAB BUTTONS */
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.tab {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    background: transparent;
+    color: white;
+    font-size: 16px;
+    transition: 0.3s ease-in-out;
+}
+
+.tab.active {
+    border-bottom: 3px solid #ffee8f;
+}
+
+/* Slide chuyển đổi form */
+.form-wrapper {
+    display: flex;
+    width: 200%;
+    transition: transform 0.5s ease-in-out;
+}
+
+.auth-form {
+    width: 50%;
+    padding: 10px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Background */
+body {
+    background: url('../images/img.png') no-repeat center center/cover;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+
+/* Input */
+label {
+    color: white;
+    font-weight: bold;
+}
+
+input {
+    background: rgba(255, 255, 255, 0.15); /* Màu nền mờ */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Viền mờ */
+    backdrop-filter: blur(5px); /* Làm mờ nền phía sau */
+    color: white;
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 5px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1); /* Chuyển icon thành màu trắng */
+    cursor: pointer;
+}
+
+/* Hiển thị 2 input trên 1 hàng */
+.form-row {
+    display: flex;
+    gap: 10px;
+}
+
+.form-group {
+    flex: 1;
+}
+
+/* Hiệu ứng password */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 35px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #555;
+}
+.password-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 16px;
+}
+
+.password-icon:hover {
+    color: white;
+}
+
+/* Nút đăng nhập & đăng ký */
+.auth-button {
+    width: 280px;
+    background: #ffee8f;
+    color: rgb(197, 45, 45);
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.auth-button:hover {
+    background: #e9d566;
+}
+
+
+/* Responsive */
+@media (max-width: 450px) {
+    .auth-container {
+        width: 90%;
+    }
+    .form-row {
+        flex-direction: column;
+    }
+}

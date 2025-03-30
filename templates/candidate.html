@@ -1,0 +1,43 @@
+<label>Ứng cử viên:</label>
+<button type="button" onclick="hienFormUngCuVien()">Thêm ứng cử viên</button>  
+
+
+<!-- Form ẩn để nhập thông tin ứng cử viên -->
+<div id="formUngCuVien" style="display: none; border: 1px solid #ccc; padding: 10px; margin-top: 10px;">
+    <label for="full_name">Họ và tên:</label>
+    <input type="text" name="full_name" id="full_name">
+
+    <label for="dob">Ngày sinh:</label>
+    <input type="date" name="dob" id="dob">
+
+    <label for="gender">Giới tính:</label>
+    <select name="gender" id="gender">
+        <option value="Nam">Nam</option>
+        <option value="Nữ">Nữ</option>
+        <option value="Khác">Khác</option>
+    </select>
+
+    <label for="nationality">Quốc tịch:</label>
+    <input type="text" name="nationality" id="nationality">
+
+    <label for="ethnicity">Dân tộc:</label>
+    <input type="text" name="ethnicity" id="ethnicity">
+
+    <label for="religion">Tôn giáo:</label>
+    <input type="text" name="religion" id="religion">
+
+    <label for="hometown">Quê quán:</label>
+    <input type="text" name="hometown" id="hometown">
+
+    <label for="current_residence">Nơi ở hiện nay:</label>
+    <input type="text" name="current_residence" id="current_residence">
+
+    <label for="occupation">Nghề nghiệp, chức vụ:</label>
+    <input type="text" name="occupation" id="occupation">
+
+    <label for="workplace">Nơi công tác:</label>
+    <input type="text" name="workplace" id="workplace">
+
+    <button type="button" onclick="themUngCuVien()">Done</button>
+    <button type="button" onclick="anFormUngCuVien()">Hủy</button>
+</div>

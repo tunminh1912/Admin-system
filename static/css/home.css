@@ -1,0 +1,289 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial,
+    sans-serif;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+    background: #fbe9e7;
+}
+
+.sidebar {
+    width: 250px;
+    background: #d32f2f;
+    color: white;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ffeb3b;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 15px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.sidebar ul li:hover,
+.sidebar ul li.active {
+    background: #b71c1c;
+}
+
+.sidebar ul li i {
+    margin-right: 10px;
+    color: #ffeb3b;
+}
+
+.main {
+    flex: 1;
+    padding: 20px;
+}
+
+.dashboard, .users, .elections, .formThemCuocBauCu, .Quanlyungcuvien, .formThemUngCuVien {
+    display: none;
+}
+
+.dashboard.active, .users.active, .elections.active, .formThemCuocBauCu.active, .Quanlyungcuvien.active, .formThemUngCuVien.active {
+    display: block;
+}
+
+.cards {
+    display: flex;
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    text-align: center;
+}
+
+.card h3 {
+    color: #d32f2f;
+}
+
+.logout-btn {
+    text-align: center;
+    margin-top: auto;
+    padding: 15px;
+    background: #ffeb3b;
+    color: #d32f2f;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.logout-btn:hover {
+    background: #fdd835;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+img {
+    border-radius: 5px;
+}
+
+.user-detail-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin-top: 20px;
+}
+
+.back-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #ff6f61;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.back-btn:hover {
+    background: #e05548;
+}
+
+/* UI Form Add Candidate */
+.formThemCuocBauCu {
+    width: 50%;
+    margin: 30px auto;
+    padding: 25px;
+    background: linear-gradient(135deg, #ffffff, #f7f7f7);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-family: 'Poppins', sans-serif;
+}
+
+.formThemCuocBauCu h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+label {
+    font-weight: 600;
+    color: #34495e;
+    font-size: 14px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bdc3c7;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease-in-out;
+    background: #ecf0f1;
+}
+
+input:focus, select:focus {
+    border-color: #e74c3c;
+    box-shadow: 0 0 6px rgba(231, 76, 60, 0.5);
+    outline: none;
+    background: #ffffff;
+}
+
+#ungCuVienContainer {
+    margin-top: 8px;
+}
+
+button {
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+
+button[type="submit"] {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+}
+
+button[type="submit"]:hover {
+    background: linear-gradient(135deg, #c0392b, #a93226);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.4);
+}
+
+#btnHuy {
+    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+    color: white;
+}
+
+#btnHuy:hover {
+    background: linear-gradient(135deg, #7f8c8d, #5d6d7e);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(149, 165, 166, 0.4);
+}
+
+button[type="submit"], #btnHuy {
+    width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .formThemCuocBauCu {
+        width: 90%;
+    }
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: white;
+    padding: 25px;
+    margin: 5% auto;
+    width: 80%;
+    max-height: 80%;
+    overflow-y: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.close {
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close:hover {
+    color: #e74c3c;
+}
+
+.formThemUngCuVien {
+    width: 50%;
+    margin: 30px auto;
+    padding: 25px;
+    background: linear-gradient(135deg, #ffffff, #f7f7f7);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-family: 'Poppins', sans-serif;
+}
+
+.formThemUngCuVien h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 22px;
+    font-weight: bold;
+}
