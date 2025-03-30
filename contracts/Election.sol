@@ -233,7 +233,7 @@ contract Election {
         // Đếm số lượng ứng viên hợp lệ
         for (uint i = 1; i <= candidateCount; i++) {
             if (
-                keccak256(bytes(candidates[i].hometown)) == keccak256(bytes(_workplace)) &&
+                keccak256(bytes(candidates[i].workplace)) == keccak256(bytes(_workplace)) &&
                 keccak256(bytes(candidates[i].status)) == keccak256(bytes("approved"))
             ) {
                 count++;
@@ -246,7 +246,7 @@ contract Election {
 
         for (uint i = 1; i <= candidateCount; i++) {
             if (
-                keccak256(bytes(candidates[i].hometown)) == keccak256(bytes(_workplace)) &&
+                keccak256(bytes(candidates[i].workplace)) == keccak256(bytes(_workplace)) &&
                 keccak256(bytes(candidates[i].status)) == keccak256(bytes("approved"))
             ) {
                 approvedCandidates[index] = candidates[i];
