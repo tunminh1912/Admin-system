@@ -19,7 +19,7 @@
         </li>
         <li class="menu-item" data-target="elections"><i class="fa fa-vote-yea"></i>Quản lý bầu cử</li>
         <li class="menu-item" data-target="Quanlyungcuvien" onclick="loadUngCuVien()"><i class="fa fa-user-tie"></i> Quản lý ứng cử viên</li>
-<button class="logout-btn" onclick="window.location.href='{{ url_for('auth.logout') }}'">
+        <button class="logout-btn" onclick="window.location.href='{{ url_for('auth.logout') }}'">
     <i class="fa fa-sign-out-alt"></i> Đăng xuất
 </button>
     </ul>
@@ -75,6 +75,7 @@
                 <th>Số lượng ứng cử viên</th>
                 <th>Thời gian bắt đầu</th>
                 <th>Thời gian kết thúc</th>
+                <th>Trạng thái</th>
                 <th>Chi tiết</th>
             </tr>
             </thead>

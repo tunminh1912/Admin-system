@@ -86,6 +86,7 @@ function fetchElections() {
                         <td>${election.ungCuVien}</td>
                         <td>${election.thoiGianBatDau}</td>
                         <td>${election.thoiGianKetThuc}</td>
+                        <td>${election.status}</td>
                         <td><button onclick="Detail_elections('${election.id}')">Xem</button></td>
                     </tr>
                 `;

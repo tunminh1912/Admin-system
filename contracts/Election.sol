@@ -26,6 +26,7 @@ contract Election {
         uint startTime;
         uint endTime;
         mapping(uint => Candidate) candidates;
+        Election_status status;
         uint candidateCount;
     }
 
@@ -96,6 +97,7 @@ contract Election {
         }
     }
     
+    enum Election_status { Created, Approved }
     function createElection(
         string memory _name,
         string memory _tinh,
@@ -113,17 +115,19 @@ contract Election {
             "Only ADMIN can add candidates"
         );
 
-        uint newElectionId = electionCount + 1;
-        elections[newElectionId].id = newElectionId;
-        elections[newElectionId].name = _name;
-        elections[newElectionId].tinh = _tinh;
-        elections[newElectionId].quan = _quan;
-        elections[newElectionId].phuong = _phuong;
-        elections[newElectionId].startTime = _startTime;
-        elections[newElectionId].endTime = _endTime;
-        elections[newElectionId].candidateCount = 0;
+        electionCount++;  // Tăng số lượng election
+        uint newElectionId = electionCount;
 
-        electionCount = newElectionId;
+        ElectionDetails storage newElection = elections[newElectionId];
+        newElection.id = newElectionId;
+        newElection.name = _name;
+        newElection.tinh = _tinh;
+        newElection.quan = _quan;
+        newElection.phuong = _phuong;
+        newElection.startTime = _startTime;
+        newElection.endTime = _endTime;
+        newElection.status = Election_status.Created;  // ✅ Mặc định là Created
+        newElection.candidateCount = 0;
 
         emit ElectionCreated(
             newElectionId,
@@ -223,13 +227,13 @@ contract Election {
         candidates[_candidateId].status = "approved";
     }
 
-    function getApprovedCandidatesByHometown(string memory _hometown) public view returns (Candidate[] memory) {
+    function getApprovedCandidatesByHometown(string memory _workplace) public view returns (Candidate[] memory) {
         uint count = 0;
 
         // Đếm số lượng ứng viên hợp lệ
         for (uint i = 1; i <= candidateCount; i++) {
             if (
-                keccak256(bytes(candidates[i].hometown)) == keccak256(bytes(_hometown)) &&
+                keccak256(bytes(candidates[i].hometown)) == keccak256(bytes(_workplace)) &&
                 keccak256(bytes(candidates[i].status)) == keccak256(bytes("approved"))
             ) {
                 count++;
@@ -242,7 +246,7 @@ contract Election {
 
         for (uint i = 1; i <= candidateCount; i++) {
             if (
-                keccak256(bytes(candidates[i].hometown)) == keccak256(bytes(_hometown)) &&
+                keccak256(bytes(candidates[i].hometown)) == keccak256(bytes(_workplace)) &&
                 keccak256(bytes(candidates[i].status)) == keccak256(bytes("approved"))
             ) {
                 approvedCandidates[index] = candidates[i];
@@ -261,6 +265,7 @@ contract Election {
         string memory,
         string memory,
         uint,
+        uint,
         uint
     ) {
         require(_id > 0 && _id <= electionCount, "Election does not exist");
@@ -274,7 +279,8 @@ contract Election {
             election.quan,
             election.phuong,
             election.startTime,
-            election.endTime
+            election.endTime,
+            uint(election.status) // ✅ Chuyển enum thành uint
         );
     }
 

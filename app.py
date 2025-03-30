@@ -258,6 +258,10 @@ def get_elections():
 
         for i in range(1, election_count + 1):
             election = contract.functions.getElection(i).call()
+            # Chuyển đổi trạng thái từ số thành chuỗi
+            status_map = {0: "Tạo mới", 1: "Đã duyệt"}
+            election_status = status_map.get(election[7], "Không xác định")
+
             elections_list.append({
                 "id": election[0],
                 "tenCuocBauCu": election[1],
@@ -266,6 +270,7 @@ def get_elections():
                 "phuong": election[4],
                 "thoiGianBatDau": format_datetime(election[5]),
                 "thoiGianKetThuc": format_datetime(election[6]),
+                "status": election_status,
             })
 
         return jsonify(elections_list), 200
@@ -427,7 +432,7 @@ def get_candidate_hometown(_id):
     if not election or election[0] == 0:
         return jsonify({"error": "Election not found"}), 404
 
-    tinh = election[2]
+    tinh = election[8]
 
     # Gọi smart contract để lấy danh sách ứng viên đã được phê duyệt theo quê quán
     try:
