@@ -40,32 +40,29 @@ function loadUngCuVien() {
         .catch(error => console.error("Lỗi khi tải danh sách ứng cử viên:", error));
 }
 
-// Example approveCandidateForUngCuVienTable function (adjust as needed):
 function approveCandidateForUngCuVienTable(candidateId) {
-    fetch(`/approve_candidate/${candidateId}`, {  // Correct URL
+    const privateKey = prompt("Vui lòng nhập Private Key của bạn:");
+
+    if (!privateKey) {
+        alert("Bạn cần nhập Private Key để duyệt ứng cử viên.");
+        return;
+    }
+
+    fetch(`/approve_candidate/${candidateId}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({ privateKey: privateKey })
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log(data.message); // Log success message
-        loadUngCuVien(); // Reload the candidate list to reflect the change
-    })
-    .catch(error => console.error("Error approving candidate:", error));
-}
-
-function approveCandidateForUngCuVienTable(candidateId) {
-    fetch(`/approve_candidate/${candidateId}`, {
-        method: 'POST',
-    })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw err;
+                });
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.error) {
                 console.error("Lỗi duyệt:", data.error);
@@ -75,6 +72,10 @@ function approveCandidateForUngCuVienTable(candidateId) {
                 alert("Duyệt ứng cử viên thành công!");
                 loadUngCuVien();
             }
+        })
+        .catch(error => {
+            console.error("Error approving candidate:", error);
+            alert("Lỗi duyệt ứng cử viên: " + (error.error || error.message || error));
         });
 }
 

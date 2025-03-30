@@ -11,6 +11,8 @@ import json
 from dotenv import load_dotenv
 import config
 from web3.exceptions import ContractLogicError, TransactionNotFound
+from flask_cors import CORS  # Import Flask-CORS
+from eth_account import Account
 
 load_dotenv()
 MONGODB_URI = os.getenv("MONGODB_URI")
@@ -118,6 +120,7 @@ with open('build/contracts/Election.json', 'r', encoding='utf-8') as f:
 contract = w3.eth.contract(address=contract_address, abi=abi)  # Tạo instance của contract
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:5000"}}) # Enable CORS for all routes, allowing requests from frontend
 app.secret_key = os.urandom(24)
 
 client = MongoClient(MONGODB_URI, tlsCAFile=certifi.where())
@@ -492,32 +495,41 @@ def add_candidate_to_election():
 @app.route("/approve_candidate/<candidate_id>", methods=["POST"])
 def approve_candidate(candidate_id):
     try:
-        # Check if the user is an INSPECTOR
+        # Kiểm tra quyền của người dùng
         if session.get("user", {}).get("role") != "INSPECTOR":
             return jsonify({"error": "Only INSPECTOR can approve candidates"}), 403
 
-        # Get the account address of the logged-in user
-        user_address = session.get("user", {}).get("address")
+        # Lấy private key từ request
+        data = request.get_json()
+        private_key = data.get("privateKey")
+        if not private_key:
+            return jsonify({"error": "Private Key is required."}), 400
 
-        if not user_address:
-            return jsonify({"error": "User address not found in session.  Are you logged in?"}), 401
+        # Kiểm tra candidate_id hợp lệ
         try:
-            candidate_id = int(candidate_id)  # Convert to integer
+            candidate_id = int(candidate_id)
         except ValueError:
             return jsonify({"error": "Invalid candidate_id. Must be an integer."}), 400
 
-        try:
-            tx_hash = contract.functions.approveCandidate(candidate_id).transact({'from': user_address})
-            w3.eth.wait_for_transaction_receipt(tx_hash)
+        # Tạo tài khoản từ private key
+        account = Account.from_key(private_key)
+        user_address = account.address
 
-        except Exception as contract_err:
-            print(f"Contract error: {contract_err}")
-            return jsonify({"error": f"Error interacting with contract: {contract_err}"}), 500
+        # Gửi giao dịch đến smart contract
+        txn = contract.functions.approveCandidate(candidate_id).transact({
+            'from': user_address
+        })
 
-        return jsonify({"message": f"Candidate with ID {candidate_id} approved successfully!"}), 200
+        # Chờ nhận transaction receipt
+        tx_receipt = w3.eth.wait_for_transaction_receipt(txn)
+
+        return jsonify({"message": f"Candidate with ID {candidate_id} approved successfully!",
+                        "transactionHash": tx_receipt.transactionHash.hex()}), 200
 
     except Exception as e:
-        print(f"Error approving candidate (approve_candidate): {e}")
+        print(f"Error approving candidate: {e}")
         return jsonify({"error": str(e)}), 500
+    
+
 if __name__ == '__main__':
     app.run(debug=True, port=8800)
