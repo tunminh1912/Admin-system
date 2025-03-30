@@ -432,7 +432,7 @@ def get_candidate_hometown(_id):
     if not election or election[0] == 0:
         return jsonify({"error": "Election not found"}), 404
 
-    tinh = election[8]
+    tinh = election[2]
 
     # Gọi smart contract để lấy danh sách ứng viên đã được phê duyệt theo quê quán
     try:
