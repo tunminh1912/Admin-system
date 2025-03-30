@@ -21,7 +21,9 @@ function loadUsers() {
                     <td>${user.date_of_birth || 'Chưa cập nhật'}</td>
                     <td>${user.hometown || 'Chưa cập nhật'}</td>
                     <td>${user.phone || 'Chưa cập nhật'}</td>
-                    <td>${user.id_document_path || 'Chưa cập nhật'}</td>
+                    <td>
+                        ${user.id_document_path ? `<img src="${user.id_document_path}" width="100" height="100" alt="Chưa cập nhật">` : 'Chưa cập nhật'}
+                    </td>
                 </tr>
             `).join('');
             document.querySelector('.users').classList.add('active');
